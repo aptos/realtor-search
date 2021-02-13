@@ -1,0 +1,60 @@
+
+<div class="container px-4">
+  <div class="mx-auto">
+    <h1>Homes</h1>
+  </div>
+
+  <div class="container px-4">
+    <% @homes.reverse.each do |home| %>
+    <div class="card mt-3" style="width: 30rem;">
+      <img src="<%= home.photo %>" class="card-img-top" alt="...">
+      <% if home.coordinate %>
+      <div id="<%= home.property_id %>" style="height: 240px;"></div>
+      <script>
+        var mymap = L.map('<%= home.property_id %>').setView(<%= home.coordinate.values.reverse %>, 13);
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+          maxZoom: 18,
+          id: 'mapbox/streets-v11',
+          tileSize: 512,
+          zoomOffset: -1
+        }).addTo(mymap);
+        L.marker(<%= home.coordinate.values.reverse %>).addTo(mymap);
+      </script>
+      <% end %>
+      <div id="<%= home.property_id %>" class="card-body">
+        <h5 class="card-title"><%= home.address %></h5>
+        <p class="card-text">
+          <dl class="row">
+            <dt class="col-sm-3">List</dt>
+            <dd class="col-sm-9">
+              <%= number_to_currency(home.list_price, precision:0) %>
+              <div class="fw-light">&nbsp&nbsp(discount: <%= number_to_currency(home.discount, precision:0) %>)</div>
+            </dd>
+
+            <dt class="col-sm-3">Per SQFT</dt>
+            <dd class="col-sm-9"><%= number_to_currency(home.price_sqft, precision:0) %></dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">
+              <ul class="list-unstyled">
+                <li>Built: <%= home.description['year_built'] %></li>
+                <li>Beds: <%= home.description['beds'] %></li>
+                <li>Baths: <%= home.description['baths_full'] %><% if home.description['baths_half']%>/<%= home.description['baths_half'] %><% end %></li>
+                <li>Square Feet: <%= home.description['sqft'].to_s(:delimited) %></li>
+                <li>Lot Size: <%= home.description['lot_sqft'].to_s(:delimited) %></li>
+              </ul>
+            </dd>
+            <dt class="col-sm-3">Updated</dt>
+            <dd class="col-sm-9"><%= home.last_update_date %></dd>
+          </dl>
+
+        </p>
+        <a href="https://www.realtor.com/realestateandhomes-detail/<%= home.permalink %>" class="btn btn-primary" target="_blank">Visit</a>
+        <a href="/homes/like/<%= home.property_id %>" class="float-end"><i style="font-size: 2rem; padding: 10px" class="bi bi-heart<%= home.liked ? '-fill' : ''%>"></i></a>
+        <a href="/homes/archive/<%= home.property_id %>" class="float-end"><i style="font-size: 2rem;" class="bi bi-archive<%= home.archived ? '-fill' : ''%>"></i></a>
+
+      </div>
+    </div>
+    <% end %>
+  </div>
+</div>

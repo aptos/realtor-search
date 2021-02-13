@@ -1,0 +1,22 @@
+development: &development
+  protocol: 'http'
+  host: localhost
+  port: 5984
+  prefix: realtor
+  # suffix: development
+  suffix: production
+  username: admin
+  password: admin
+
+test:
+  <<: *development
+  suffix: test
+
+production:
+  protocol: 'https'
+  host: <%= ENV['COUCH_HOST'] %>
+  port: <%= ENV['COUCH_PORT'] %>
+  prefix: realtor
+  suffix: production
+  username: <%= ENV['COUCH_USER'] %>
+  password: <%= ENV['COUCH_PASSWORD'] %>
