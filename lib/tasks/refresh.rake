@@ -13,9 +13,4 @@ namespace :homes do
     RealtorApi.search
   end
 
-  desc "remove pending"
-  task :search => :environment do
-    RealtorApi.remove_pending
-  end
-
 end
